@@ -3,11 +3,11 @@
   "version": "1.0.0",
   "description": "MCP server skeleton",
   "type": "module",
-  "main": "server.js",
+  "main": "dist/server.js",
   "scripts": {
-    "start": "node server.js",
+    "start": "node src/server.ts",
     "build": "tsc",
-    "start:ts": "node dist/server.js"
+    "start:dist": "node dist/server.js"
   },
   "dependencies": {
     "@modelcontextprotocol/sdk": "^1.0.0",

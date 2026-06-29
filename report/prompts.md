@@ -116,3 +116,17 @@
 9. **Ссылки на код** — заглушки вида `server.ts:L1–L50`, заполним после финальной сборки
 
 ---
+
+Проверь весь проект mcp-server/:
+
+1. Запусти npm run build — должно компилироваться без ошибок TypeScript
+2. Запусти node dist/server.js — должно появиться в stderr:
+  - [MCP] Registered tools: list_files, read_file, search_in_files, run_lint
+  - [MCP] Server started
+3. Найди и исправь все TypeScript ошибки не меняя логику
+4. Убедись что .gitignore содержит: node_modules, dist, .env
+5. Убедись что .env нигде не импортируется напрямую в коде (только process.env)
+
+После успешной сборки — обнови ссылки на строки кода в README.md (найди реальные номера строк для каждого tool и для старта сервера).
+
+---

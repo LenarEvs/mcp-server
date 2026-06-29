@@ -1,0 +1,12 @@
+{
+  "mcpServers": {
+    "project-helper": {
+      "command": "node",
+      "args": ["./dist/server.js"],
+      "cwd": "/ЗАМЕНИ/НА/АБСОЛЮТНЫЙ/ПУТЬ/mcp-server",
+      "env": {
+        "PROJECT_ROOT": "./sandbox"
+      }
+    }
+  }
+}

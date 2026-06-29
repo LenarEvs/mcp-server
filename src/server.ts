@@ -12,6 +12,8 @@ const ALLOWED_COMMANDS = ["npm test", "npm run lint", "npx tsc --noEmit"];
 
 const SEARCH_SKIP_DIRS = new Set(["node_modules", ".git", "dist"]);
 
+const REGISTERED_TOOLS = ["list_files", "read_file", "search_in_files", "run_command"];
+
 function resolveInProject(relativePath: string): string {
   const resolved = path.resolve(PROJECT_ROOT, relativePath);
   if (resolved !== PROJECT_ROOT && !resolved.startsWith(PROJECT_ROOT + path.sep)) {
@@ -20,9 +22,9 @@ function resolveInProject(relativePath: string): string {
   return resolved;
 }
 
-function logToolCall(name: string, input: unknown, status: "success" | "error", details?: unknown): void {
-  const detailsPart = details === undefined ? "" : ` details=${JSON.stringify(details)}`;
-  console.error(`[tool:${name}] input=${JSON.stringify(input)} status=${status}${detailsPart}`);
+function logToolCall(name: string, params: unknown, status: "success" | "error", error?: string): void {
+  const errorPart = status === "error" ? ` error=${error}` : "";
+  console.error(`[MCP] tool=${name} params=${JSON.stringify(params)} status=${status}${errorPart}`);
 }
 
 function toolResult(data: unknown, isError = false) {
@@ -162,6 +164,8 @@ async function main(): Promise<void> {
       }
     },
   );
+
+  console.error(`[MCP] Registered tools: ${REGISTERED_TOOLS.join(", ")}`);
 
   const transport = new StdioServerTransport();
   await server.connect(transport);

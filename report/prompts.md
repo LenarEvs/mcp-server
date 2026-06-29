@@ -62,3 +62,57 @@
 
 ---
 
+В mcp-server/src/server.ts добавь логирование для каждого из 4 инструментов.
+
+Логи через console.error, формат:
+
+[MCP] tool=<имя> params=<JSON параметров> status=success
+[MCP] tool=<имя> params=<JSON параметров> status=error error=<сообщение>
+Лог должен быть:
+- В начале каждого tool — входные параметры
+- В конце — статус success или error
+- При ошибке — текст ошибки
+
+Также при старте сервера выводить список зарегистрированных tools:
+
+[MCP] Registered tools: list_files, read_file, search_in_files, run_lint
+
+---
+
+Создай файлы конфигурации для подключения MCP-сервера к IDE.
+
+### 1. mcp-server/.cursor/mcp.json
+
+{
+"mcpServers": {
+"project-helper": {
+"command": "node",
+"args": ["./dist/server.js"],
+"cwd": "/ЗАМЕНИ/НА/АБСОЛЮТНЫЙ/ПУТЬ/mcp-server",
+"env": {
+"PROJECT_ROOT": "./sandbox"
+}
+}
+}
+}
+### 2. mcp-server/claude_desktop_config_example.json
+Аналогичная структура для Claude Desktop.
+
+Добавь комментарий в оба файла (в README, не в JSON) — где найти абсолютный путь командой
+
+---
+Создай `mcp-server/README.md` со следующей структурой:
+
+1. **Что это** — 2-3 предложения о проекте
+2. **Установка** — 3 шага: git clone / npm install / npm run build
+3. **Настройка** — как заполнить .env (скопировать .env.example, прописать PROJECT_ROOT)
+4. **Подключение к IDE**
+  - Cursor: 4 шага (скопировать mcp.json, заменить путь, перезапустить, проверить)
+  - Claude Desktop: аналогично
+5. **Инструменты** — таблица: название | описание | параметры | пример ответа
+6. **Tool outputs contract** — точный формат JSON для каждого tool (success и error случай)
+7. **Security** — описание ограничений (только PROJECT_ROOT, whitelist команд)
+8. **Логи** — пример вывода логов сервера
+9. **Ссылки на код** — заглушки вида `server.ts:L1–L50`, заполним после финальной сборки
+
+---

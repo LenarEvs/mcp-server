@@ -32,12 +32,35 @@ npm run build
    PROJECT_ROOT=./
    ```
 
-> ⚠️ **Известное ограничение**: в текущей реализации (`src/server.ts`) `PROJECT_ROOT`
-> вычисляется автоматически как родительская папка `dist/server.js` (то есть корень
-> `mcp-server`) и **не читается** из `.env` или из `env.PROJECT_ROOT` в конфигах IDE,
-> хотя `dotenv` уже добавлен в зависимости. Если нужно ограничить песочницу другой
-> папкой (например `./sandbox`, как в примерах конфигов), это потребует доработки —
-> подключения `dotenv` и чтения `process.env.PROJECT_ROOT` в `resolveInProject`.
+`PROJECT_ROOT` читается через `dotenv` из `.env` (относительные пути резолвятся от
+`process.cwd()`) и может быть переопределён полем `env.PROJECT_ROOT` в конфиге
+IDE/Claude Desktop — оно имеет приоритет над `.env`. Если переменная не задана,
+по умолчанию используется родительская папка `dist/server.js`, то есть сам `mcp-server`.
+
+## Подключение к другому проекту
+
+Чтобы сервер работал с файлами **другого** проекта (а не с самим `mcp-server`),
+укажите в конфиге IDE/Claude Desktop:
+
+- `args` — абсолютный путь до `dist/server.js` внутри `mcp-server` (не зависит от `cwd`);
+- `env.PROJECT_ROOT` — абсолютный путь до корня того проекта, с которым должен работать сервер.
+
+```json
+{
+  "mcpServers": {
+    "project-helper": {
+      "command": "node",
+      "args": ["/абсолютный/путь/mcp-server/dist/server.js"],
+      "env": {
+        "PROJECT_ROOT": "/абсолютный/путь/до/другого/проекта"
+      }
+    }
+  }
+}
+```
+
+После изменения конфига полностью перезапустите IDE/Claude Desktop, чтобы он
+переподключился к серверу с новым `PROJECT_ROOT`.
 
 ## Подключение к IDE
 
@@ -139,9 +162,6 @@ npm run build
   служебные файлы.
 - **Логи только в stderr.** `console.error` используется для всех логов, stdout зарезервирован
   под протокол MCP (stdio transport) — это критично, иначе лог сломает протокол.
-- Известный пробел (см. раздел «Настройка» выше): `PROJECT_ROOT` из `.env`/`env` пока не
-  читается кодом, поэтому фактическая песочница — это сама папка `mcp-server`, а не
-  произвольная директория, заданная через конфиг.
 
 ## Логи
 
@@ -169,15 +189,16 @@ MCP server started
 
 | Компонент | Ссылка |
 |---|---|
-| Импорты | `server.ts:L1–L7` |
-| Константы и конфигурация (`PROJECT_ROOT`, `ALLOWED_COMMANDS`, `SEARCH_SKIP_DIRS`, `REGISTERED_TOOLS`) | `server.ts:L9–L15` |
-| `resolveInProject` (защита от выхода за пределы `PROJECT_ROOT`) | `server.ts:L17–L23` |
-| `logToolCall` / `toolResult` (логирование и формат ответа) | `server.ts:L25–L35` |
-| `SearchMatch` / `searchDirectory` (рекурсивный обход директорий) | `server.ts:L37–L71` |
-| `main()`: инициализация `McpServer` | `server.ts:L73–L77` |
-| tool `list_files` | `server.ts:L79–L99` |
-| tool `read_file` | `server.ts:L101–L117` |
-| tool `search_in_files` | `server.ts:L119–L136` |
-| tool `run_command` | `server.ts:L138–L166` |
-| Старт транспорта и лог `"MCP server started"` | `server.ts:L168–L174` |
-| Точка входа и обработка фатальных ошибок | `server.ts:L176–L179` |
+| Импорты | `server.ts:L1–L8` |
+| `dotenv.config()` и вычисление `PROJECT_ROOT` (из `env`/`.env` или дефолт) | `server.ts:L10–L15` |
+| Константы и конфигурация (`ALLOWED_COMMANDS`, `SEARCH_SKIP_DIRS`, `REGISTERED_TOOLS`) | `server.ts:L17–L21` |
+| `resolveInProject` (защита от выхода за пределы `PROJECT_ROOT`) | `server.ts:L23–L29` |
+| `logToolCall` / `toolResult` (логирование и формат ответа) | `server.ts:L31–L41` |
+| `SearchMatch` / `searchDirectory` (рекурсивный обход директорий) | `server.ts:L43–L77` |
+| `main()`: инициализация `McpServer` | `server.ts:L79–L83` |
+| tool `list_files` | `server.ts:L85–L105` |
+| tool `read_file` | `server.ts:L107–L123` |
+| tool `search_in_files` | `server.ts:L125–L142` |
+| tool `run_command` | `server.ts:L144–L172` |
+| Старт транспорта и лог `"MCP server started"` | `server.ts:L174–L180` |
+| Точка входа и обработка фатальных ошибок | `server.ts:L182–L185` |

@@ -5,8 +5,14 @@ import { promises as fs } from "fs";
 import path from "path";
 import { fileURLToPath } from "url";
 import { execSync } from "child_process";
+import dotenv from "dotenv";
 
-const PROJECT_ROOT = path.resolve(path.dirname(fileURLToPath(import.meta.url)), "..");
+dotenv.config();
+
+const DEFAULT_PROJECT_ROOT = path.resolve(path.dirname(fileURLToPath(import.meta.url)), "..");
+const PROJECT_ROOT = process.env.PROJECT_ROOT
+  ? path.resolve(process.env.PROJECT_ROOT)
+  : DEFAULT_PROJECT_ROOT;
 
 const ALLOWED_COMMANDS = ["npm test", "npm run lint", "npx tsc --noEmit"];
 

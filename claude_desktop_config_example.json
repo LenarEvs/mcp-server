@@ -2,9 +2,9 @@
   "mcpServers": {
     "project-helper": {
       "command": "node",
-      "args": ["/АБСОЛЮТНЫЙ/ПУТЬ/mcp-server/dist/server.js"],
+      "args": ["C:\\Users\\lenar\\OneDrive\\Рабочий стол\\Otus\\mcp-server\\dist\\server.js"],
       "env": {
-        "PROJECT_ROOT": "/АБСОЛЮТНЫЙ/ПУТЬ/ДО/ДРУГОГО/ПРОЕКТА"
+        "PROJECT_ROOT": "C:\\Users\\lenar\\OneDrive\\Рабочий стол\\Otus\\ai-chat-app"
       }
     }
   }
